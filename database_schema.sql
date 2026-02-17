@@ -1,0 +1,33 @@
+CREATE TABLE users (
+  id SERIAL PRIMARY KEY,
+  name VARCHAR(120) NOT NULL,
+  email VARCHAR(255) UNIQUE NOT NULL,
+  password_hash VARCHAR(255) NOT NULL,
+  role VARCHAR(20) NOT NULL DEFAULT 'user',
+  is_active BOOLEAN NOT NULL DEFAULT TRUE,
+  created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE subscriptions (
+  id SERIAL PRIMARY KEY,
+  user_id INTEGER NOT NULL REFERENCES users(id),
+  plan_id VARCHAR(50) NOT NULL,
+  plan_name VARCHAR(100) NOT NULL,
+  plan_duration INTEGER NOT NULL,
+  price NUMERIC(10,2) NOT NULL,
+  start_date TIMESTAMP,
+  end_date TIMESTAMP,
+  status VARCHAR(20) NOT NULL,
+  payment_status VARCHAR(20) NOT NULL
+);
+
+CREATE TABLE payments (
+  id SERIAL PRIMARY KEY,
+  user_id INTEGER NOT NULL REFERENCES users(id),
+  subscription_id INTEGER NOT NULL REFERENCES subscriptions(id),
+  payment_gateway_id VARCHAR(255) UNIQUE NOT NULL,
+  order_id VARCHAR(255) UNIQUE NOT NULL,
+  amount NUMERIC(10,2) NOT NULL,
+  status VARCHAR(20) NOT NULL,
+  created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
